@@ -1,0 +1,21 @@
+{
+  "name": "restify-params",
+  "version": "1.0.0",
+  "description": "Restify plugin to describe route parameters in a schema-like way",
+  "main": "index.js",
+  "keywords": [
+    "restify",
+    "parameters",
+    "body",
+    "parse",
+    "describe",
+    "schema"
+  ],
+  "author": "GaldanM",
+  "license": "ISC",
+  "dependencies": {
+    "moment": "^2.24.0",
+    "mongoose": "^5.6.10",
+    "restify-errors": "^8.0.1"
+  }
+}
