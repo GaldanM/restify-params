@@ -201,10 +201,10 @@ module.exports = function(routes, { trimStrings = true } = {}) {
 
 				const err = schemaParameter.validate(paramFormatted, req, schemaParameter);
 				if (err) {
-					if (err instanceof Error) {
-						throw new rErrors.BadRequestError(err.body.message);
+					if (err instanceof rErrors.HttpError) {
+						throw err;
 					} else {
-						throw new rErrors.InternalServerError(`${pFullName}: validate should return an Error object`);
+						throw new rErrors.InternalServerError(`${pFullName}: validate should return a Restify Error`);
 					}
 				}
 			}
