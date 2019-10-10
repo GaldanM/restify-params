@@ -165,7 +165,7 @@ module.exports = function(routes, { trimStrings = true } = {}) {
 				let receivedParameterArray = receivedParameter;
 				if (Object.getPrototypeOf(receivedParameter).constructor === String) {
 					try {
-						receivedParameterArray = JSON.parse(receivedParameter);
+						receivedParameterArray = receivedParameter !== '' ? JSON.parse(receivedParameter) : [];
 					} catch (err) {
 						receivedParameterArray = receivedParameter.split(',').map(item => item.trim());
 					}
