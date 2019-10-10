@@ -1,0 +1,8 @@
+{
+  "extends": ["tslint:recommended", "tslint-config-prettier"],
+  "rules": {
+    "only-arrow-functions": false,
+    "prefer-const": [true, { "destructuring": "all" }],
+    "object-literal-sort-keys": false
+  }
+}

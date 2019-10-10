@@ -1,10 +1,17 @@
 {
   "compilerOptions": {
+    "allowJs": true,
     "module": "commonjs",
     "target": "ESNext",
+    "moduleResolution": "node",
     "sourceMap": true,
-    "declaration": true,
-    "esModuleInterop": true
+//    "declaration": true,
+    "esModuleInterop": true,
+//    "noImplicitAny": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": ["node_modules/*"]
+    }
   },
   "exclude": ["node_modules"]
 }

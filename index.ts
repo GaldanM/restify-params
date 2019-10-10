@@ -1,16 +1,23 @@
-import rErrors from 'restify-errors';
-
-import mongoose from 'mongoose';
+type Server = import('restify').Server;
+type RequestHandler = import('restify').RequestHandler;
+interface IParameterSchema {
+	name: string, type: object, defaultValue?: any,
+	required?: boolean, params?: IParameterSchema[],
+	parentName?: string, expected?: any[]
+}
 
 import moment from 'moment';
+import mongoose from 'mongoose';
+import rErrors from 'restify-errors';
 
 const { Types: { ObjectId } } = mongoose;
-moment["suppressDeprecationWarnings"] = true;
+// @ts-ignore
+moment.suppressDeprecationWarnings = true;
 
-module.exports = function(routes, { trimStrings = true } = {}) {
-	return (req, res, next) => {
+module.exports = function(restifyServer : Server) : RequestHandler {
+	return function (req, res, next) {
 		function getRouteParamSchema() {
-			function formatParams([paramName, paramSpecs]) {
+			function formatParams([paramName, paramSpecs] : [string, IParameterSchema]) : IParameterSchema {
 				return {
 					name: paramName,
 					...paramSpecs,
@@ -19,14 +26,16 @@ module.exports = function(routes, { trimStrings = true } = {}) {
 			}
 
 			// Get specs from called route
-			const registeredRoute = routes[req.route.name];
+			const route = req.getRoute();
+			const registeredRoute = { path: 'lol', spec: { params: {} } };
+			// const { route: registeredRoute } = restifyServer.router._registry.lookup(route.method, route.path.toString());
 
 			// Get Params
 			const pathParams = registeredRoute.path.split('/').filter(param => param[0] === ':').map(param => param.slice(1));
 			// Add pathParams to params as strings
-			const params = pathParams.reduce((params, param) => ({
-				...params,
-				[param]: { ...params[param], type: (param.toLowerCase().includes('id') && ObjectId) || String, required: true },
+			const params = pathParams.reduce((acc, param) => ({
+				...acc,
+				[param]: { ...acc[param], type: (param.toLowerCase().includes('id') && ObjectId) || String, required: true },
 			}), registeredRoute.spec.params || {});
 
 			// Format parameters and deep parameters
@@ -57,7 +66,7 @@ module.exports = function(routes, { trimStrings = true } = {}) {
 				}
 
 				// Format value
-				receivedParameter = (trimStrings && receivedParameter.trim()) || receivedParameter;
+				receivedParameter = (receivedParameter.trim()) || receivedParameter;
 				// If parameter is supposed to be an email, we lowercase it and check if the format is valid
 				if (schemaParameter.isEmail) {
 					receivedParameter = receivedParameter.toLowerCase();
@@ -80,24 +89,24 @@ module.exports = function(routes, { trimStrings = true } = {}) {
 				if (Object.getPrototypeOf(receivedParameter).constructor === String) {
 					receivedParameter = receivedParameter.replace(',', '.');
 				}
-				const number = Number(receivedParameter);
-				if (Number.isNaN(number)) {
+				const paramAsNumber = Number(receivedParameter);
+				if (Number.isNaN(paramAsNumber)) {
 					throw new rErrors.BadRequestError(`${pFullName}: expected Number but '${JSON.stringify(receivedParameter).split('"').join('')}' is NaN`);
 				}
 
 				// Check value with expected
-				if (pExpected && !pExpected.some(expectedVal => number === expectedVal)) {
+				if (pExpected && !pExpected.some((expectedVal : number) => paramAsNumber === expectedVal)) {
 					throw new rErrors.BadRequestError(`${pFullName}: invalid value '${receivedParameter}', expected values are [${pExpected.map(val => `'${val}'`).join(' OR ')}]`);
 				}
 
-				if (schemaParameter.min && number < schemaParameter.min) {
-					throw new rErrors.BadRequestError(`${pFullName}: minimum value specified '${schemaParameter.min}' is above the received value '${number}'`);
+				if (schemaParameter.min && paramAsNumber < schemaParameter.min) {
+					throw new rErrors.BadRequestError(`${pFullName}: minimum value specified '${schemaParameter.min}' is above the received value '${paramAsNumber}'`);
 				}
-				if (schemaParameter.max && number > schemaParameter.max) {
-					throw new rErrors.BadRequestError(`${pFullName}: maximum value specified '${schemaParameter.max}' is below the received value '${number}'`);
+				if (schemaParameter.max && paramAsNumber > schemaParameter.max) {
+					throw new rErrors.BadRequestError(`${pFullName}: maximum value specified '${schemaParameter.max}' is below the received value '${paramAsNumber}'`);
 				}
 
-				return number;
+				return paramAsNumber;
 			}
 			function handleBoolean() {
 				if (Object.getPrototypeOf(receivedParameter).constructor === Boolean) {
@@ -205,10 +214,10 @@ module.exports = function(routes, { trimStrings = true } = {}) {
 
 				const err = schemaParameter.validate(paramFormatted, req, schemaParameter);
 				if (err) {
-					if (err instanceof Error) {
-						throw new rErrors.BadRequestError(err.body.message);
+					if (err instanceof rErrors.HttpError) {
+						throw err;
 					} else {
-						throw new rErrors.InternalServerError(`${pFullName}: validate should return an Error object`);
+						throw new rErrors.InternalServerError(`${pFullName}: validate should return a Restify Error`);
 					}
 				}
 			}
