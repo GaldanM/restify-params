@@ -165,7 +165,7 @@ module.exports = function(routes, { trimStrings = true } = {}) {
 				let receivedParameterArray = receivedParameter;
 				if (Object.getPrototypeOf(receivedParameter).constructor === String) {
 					try {
-						receivedParameterArray = JSON.parse(receivedParameter);
+						receivedParameterArray = receivedParameter !== '' ? JSON.parse(receivedParameter) : [];
 					} catch (err) {
 						receivedParameterArray = receivedParameter.split(',').map(item => item.trim());
 					}
@@ -253,7 +253,7 @@ module.exports = function(routes, { trimStrings = true } = {}) {
 			if (schemaParameter.transform) {
 				paramFormatted = handleTransform();
 			}
-			// Function used to call the validate function set in the route schema (optional)
+			// Function used to call the validate	 function set in the route schema (optional)
 			if (schemaParameter.validate) {
 				handleValidate();
 			}
