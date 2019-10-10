@@ -253,7 +253,7 @@ module.exports = function(routes, { trimStrings = true } = {}) {
 			if (schemaParameter.transform) {
 				paramFormatted = handleTransform();
 			}
-			// Function used to call the validate	 function set in the route schema (optional)
+			// Function used to call the validate function set in the route schema (optional)
 			if (schemaParameter.validate) {
 				handleValidate();
 			}
