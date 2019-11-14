@@ -64,6 +64,26 @@ module.exports = function(routes, { trimStrings = true } = {}) {
 					}
 				}
 
+				if (schemaParameter.isLinkedin) {
+					const linkedinRegex = /^https:\/\/[a-z]{2,3}\.linkedin\.com\/company\/.*$/;
+
+					receivedParameter = receivedParameter.toLowerCase();
+
+					if (!linkedinRegex.test(receivedParameter)) {
+						throw new rErrors.BadRequestError(`${pFullName}: '${JSON.stringify(receivedParameter).split('"').join('')}' is not a valid linkedin url`);
+					}
+				}
+
+				if (schemaParameter.isWelcomeToTheJungle) {
+					const welcomeToTheJungleRegex = /^https:\/\/[a-z]{2,3}\.welcometothejungle\.com\/[a-z]{2}\/companies\/.*$/;
+
+					receivedParameter = receivedParameter.toLowerCase();
+
+					if(!welcomeToTheJungleRegex.test(receivedParameter)) {
+						throw new rErrors.BadRequestError(`${pFullName}: '${JSON.stringify(receivedParameter).split('"').join('')}' is not a valid wwtj url`);
+					}
+				}
+
 				// Check value with expected
 				if (pExpected && !pExpected.some(expectedVal => receivedParameter === expectedVal)) {
 					throw new rErrors.BadRequestError(`${pFullName}: invalid value '${JSON.stringify(receivedParameter).split('"').join('')}', expected values are [${pExpected.map(val => `'${val}'`).join(' OR ')}]`);
