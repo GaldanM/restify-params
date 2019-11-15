@@ -15,7 +15,13 @@
   "license": "ISC",
   "dependencies": {
     "moment": "^2.24.0",
-    "mongoose": "^5.6.10",
+    "mongoose": "^5.7.11",
     "restify-errors": "^8.0.1"
+  },
+  "devDependencies": {
+    "@types/mongoose": "^5.5.31",
+    "@types/restify": "^8.4.1",
+    "@types/restify-errors": "^4.3.3",
+    "restify": "^8.4.0"
   }
 }

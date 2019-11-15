@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "inlineSources": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "outDir": "dist",
+    "pretty": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "esnext"
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": ["index.ts"]
+}
