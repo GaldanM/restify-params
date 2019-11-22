@@ -64,6 +64,12 @@ module.exports = function(routes, { trimStrings = true } = {}) {
 					}
 				}
 
+				if (schemaParameter.validateRegex) {
+					if(!schemaParameter.validateRegex.test(receivedParameter)) {
+						throw new rErrors.BadRequestError(`${pFullName}: '${JSON.stringify(receivedParameter).split('"').join('')}' does not match the regex`);
+					}
+				}
+
 				// Check value with expected
 				if (pExpected && !pExpected.some(expectedVal => receivedParameter === expectedVal)) {
 					throw new rErrors.BadRequestError(`${pFullName}: invalid value '${JSON.stringify(receivedParameter).split('"').join('')}', expected values are [${pExpected.map(val => `'${val}'`).join(' OR ')}]`);
