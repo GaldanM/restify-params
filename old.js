@@ -188,12 +188,6 @@ module.exports = function(routes, { trimStrings = true } = {}) {
 				return receivedParameterArray;
 			}
 
-			function handleTransform() {
-				if (Object.getPrototypeOf(schemaParameter.transform).constructor !== Function) {
-					throw new rErrors.InternalServerError(`${pFullName}: transform is not a function`);
-				}
-				return schemaParameter.transform(paramFormatted, req, schemaParameter);
-			}
 			function handleValidate() {
 				if (Object.getPrototypeOf(schemaParameter.validate).constructor !== Function) {
 					throw new rErrors.InternalServerError(`${pFullName}: validate is not a function`);
@@ -207,6 +201,12 @@ module.exports = function(routes, { trimStrings = true } = {}) {
 						throw new rErrors.InternalServerError(`${pFullName}: validate should return a Restify Error`);
 					}
 				}
+			}
+			function handleTransform() {
+				if (Object.getPrototypeOf(schemaParameter.transform).constructor !== Function) {
+					throw new rErrors.InternalServerError(`${pFullName}: transform is not a function`);
+				}
+				return schemaParameter.transform(paramFormatted, req, schemaParameter);
 			}
 
 			// Destructuring the route schema parameter
@@ -249,13 +249,13 @@ module.exports = function(routes, { trimStrings = true } = {}) {
 			}
 			let paramFormatted = functionToCall();
 
-			// Function used to call the transform function set in the route schema (optional)
-			if (schemaParameter.transform) {
-				paramFormatted = handleTransform();
-			}
 			// Function used to call the validate function set in the route schema (optional)
 			if (schemaParameter.validate) {
 				handleValidate();
+			}
+			// Function used to call the transform function set in the route schema (optional)
+			if (schemaParameter.transform) {
+				paramFormatted = handleTransform();
 			}
 
 			return paramFormatted;

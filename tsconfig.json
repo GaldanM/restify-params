@@ -3,8 +3,8 @@
     "inlineSources": true,
     "module": "commonjs",
     "moduleResolution": "node",
-    "noImplicitAny": true,
-    "outDir": "dist",
+//    "noUnusedLocals": true,
+//    "noUnusedParameters": true,
     "pretty": true,
     "removeComments": true,
     "sourceMap": true,
@@ -12,7 +12,7 @@
     "target": "esnext"
   },
   "include": [
-    "src/**/*"
-  ],
-  "exclude": ["index.ts"]
+    "src/**/*",
+    "test/**/*"
+  ]
 }

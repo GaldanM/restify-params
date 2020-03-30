@@ -1,1 +1,1 @@
-module.exports = require('./dist/mod.js');
+module.exports = require('./src/mod.js');
