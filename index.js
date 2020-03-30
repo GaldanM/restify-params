@@ -159,7 +159,7 @@ module.exports = function(routes, { trimStrings = true } = {}) {
 
 						return {
 							...acc,
-							...newField[subSchemaParameter.name] && newField,
+							...newField[subSchemaParameter.name] !== null && newField,
 						};
 					}, {});
 				}
