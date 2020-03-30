@@ -1,6 +1,6 @@
 {
   "name": "restify-params",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Restify plugin to describe route parameters in a schema-like way",
   "main": "index.js",
   "keywords": [
